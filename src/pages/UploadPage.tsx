@@ -78,7 +78,7 @@ const UploadPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Upload Files</h1>
-          <p className="text-muted-foreground mt-1">Upload your files securely to VaultDrop</p>
+          <p className="text-muted-foreground mt-1">Upload your files securely to FTP-Server</p>
         </div>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
