@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { API } from '@/config/apis';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50),
@@ -20,6 +27,7 @@ type SignupForm = z.infer<typeof signupSchema>;
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showVerifyDialog, setShowVerifyDialog] = useState(false);
   const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignupForm>({
@@ -30,8 +38,11 @@ const Signup = () => {
     setLoading(true);
     try {
       await api.post(API.auth.signup, data);
-      toast.success('Account created! Please check your email to verify.');
-      navigate('/login');
+      setShowVerifyDialog(true);
+      setTimeout(() => {
+        setShowVerifyDialog(false);
+        navigate('/login');
+      }, 5000);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Signup failed');
     } finally {
@@ -125,6 +136,32 @@ const Signup = () => {
           </p>
         </div>
       </motion.div>
+
+      <Dialog open={showVerifyDialog} onOpenChange={(open) => {
+        setShowVerifyDialog(open);
+        if (!open) navigate('/login');
+      }}>
+        <DialogContent className="glass-card border-border/50 sm:max-w-md text-center">
+          <DialogHeader className="items-center">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="text-xl font-bold text-foreground">Check Your Email</DialogTitle>
+            <DialogDescription className="text-muted-foreground mt-2">
+              We've sent a verification link to your email address. Please click the link to verify your account before signing in.
+            </DialogDescription>
+          </DialogHeader>
+          <button
+            onClick={() => {
+              setShowVerifyDialog(false);
+              navigate('/login');
+            }}
+            className="w-full py-3 rounded-lg gradient-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity mt-4"
+          >
+            Go to Login
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
