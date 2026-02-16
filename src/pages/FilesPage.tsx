@@ -4,22 +4,21 @@ import {
   Grid3X3,
   List,
   Search,
-  Filter,
   FileText,
   Image,
   Video,
   File,
   Download,
-  Trash2,
-  MoreHorizontal,
   HardDrive,
+  Loader2,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import type { FileFilter, ViewMode, FileItem } from '@/types';
 import { toast } from 'sonner';
-import api from '@/lib/axios';
+import axios from 'axios';
 import { API } from '@/config/apis';
 import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/axios';
 
 const filterOptions: { label: string; value: FileFilter; icon: React.ElementType }[] = [
   { label: 'All', value: 'all', icon: HardDrive },
@@ -36,16 +35,19 @@ const getFileIcon = (type: string) => {
   return File;
 };
 
-const formatSize = (bytes: number) => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+const formatDate = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 };
 
 const FilesPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [filter, setFilter] = useState<FileFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const { subscription } = useAuthStore();
 
   const { data: files = [], isLoading } = useQuery({
@@ -57,8 +59,7 @@ const FilesPage = () => {
   });
 
   const filteredFiles = files.filter((file) => {
-    const matchesSearch = file.originalName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = file.filename?.toLowerCase().includes(searchQuery.toLowerCase());
     if (filter === 'all') return matchesSearch;
     if (filter === 'images') return matchesSearch && file.type?.startsWith('image/');
     if (filter === 'videos') return matchesSearch && file.type?.startsWith('video/');
@@ -66,25 +67,28 @@ const FilesPage = () => {
     return matchesSearch && !file.type?.startsWith('image/') && !file.type?.startsWith('video/') && !file.type?.includes('pdf');
   });
 
-  const handleDownload = async (fileId: string) => {
+  const handleDownload = async (file: FileItem) => {
     if (subscription?.plan !== 'premium' || subscription?.status !== 'active') {
       toast.error('Upgrade to Premium to download files');
       return;
     }
+    setDownloadingId(file.fileId);
     try {
-      const res = await api.get(API.files.download(fileId), {
+      const res = await axios.get(API.files.download(file.fileId), {
         headers: { 'x-api-key': subscription.key },
         responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'download';
+      a.download = file.filename;
       a.click();
       window.URL.revokeObjectURL(url);
-      toast.success('Download started');
+      toast.success(`${file.filename} downloaded`);
     } catch {
       toast.error('Download failed');
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -109,7 +113,6 @@ const FilesPage = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* View toggle */}
           <div className="glass-card flex p-1">
             <button
               onClick={() => setViewMode('grid')}
@@ -181,6 +184,7 @@ const FilesPage = () => {
           >
             {filteredFiles.map((file, idx) => {
               const Icon = getFileIcon(file.type);
+              const isDownloading = downloadingId === file.fileId;
               return (
                 <motion.div
                   key={file._id}
@@ -194,20 +198,17 @@ const FilesPage = () => {
                   {viewMode === 'grid' ? (
                     <>
                       <div className="h-32 bg-secondary/30 rounded-lg flex items-center justify-center mb-3 group-hover:bg-secondary/50 transition-colors">
-                        {file.type?.startsWith('image/') && file.url ? (
-                          <img src={file.url} alt={file.originalName} className="h-full w-full object-cover rounded-lg" loading="lazy" />
-                        ) : (
-                          <Icon className="h-12 w-12 text-muted-foreground/50" />
-                        )}
+                        <Icon className="h-12 w-12 text-muted-foreground/50" />
                       </div>
-                      <p className="text-sm font-medium text-foreground truncate">{file.originalName || file.name}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{file.filename}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-muted-foreground">{formatSize(file.size)}</span>
+                        <span className="text-xs text-muted-foreground">{formatDate(file.createdAt)}</span>
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-primary/20 text-primary"
+                          onClick={(e) => { e.stopPropagation(); handleDownload(file); }}
+                          disabled={isDownloading}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-primary/20 text-primary disabled:opacity-50"
                         >
-                          <Download className="h-4 w-4" />
+                          {isDownloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
                         </button>
                       </div>
                     </>
@@ -217,14 +218,15 @@ const FilesPage = () => {
                         <Icon className="h-5 w-5 text-muted-foreground" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{file.originalName || file.name}</p>
-                        <p className="text-xs text-muted-foreground">{formatSize(file.size)} · {new Date(file.createdAt).toLocaleDateString()}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{file.filename}</p>
+                        <p className="text-xs text-muted-foreground">{file.folder} · {formatDate(file.createdAt)}</p>
                       </div>
                       <button
-                        onClick={() => handleDownload(file._id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-md hover:bg-primary/20 text-primary"
+                        onClick={() => handleDownload(file)}
+                        disabled={isDownloading}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-md hover:bg-primary/20 text-primary disabled:opacity-50"
                       >
-                        <Download className="h-4 w-4" />
+                        {isDownloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
                       </button>
                     </>
                   )}
