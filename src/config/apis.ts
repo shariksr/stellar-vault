@@ -11,6 +11,7 @@ export const API = {
     verifyEmail: `${BASE_URL}/v1/auth/verify-email`,
     logout: `${BASE_URL}/v1/auth/logout`,
     forgotPassword: `${BASE_URL}/v1/auth/forgot-password`,
+    resetPassword: `${BASE_URL}/v1/auth/reset-password`,
   },
 
   files: {

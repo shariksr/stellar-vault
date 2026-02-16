@@ -29,8 +29,8 @@ api.interceptors.response.use(
       if (refreshToken) {
         try {
           const { data } = await axios.post(API.auth.refresh, { refreshToken });
-          useAuthStore.getState().setTokens(data.token, data.refreshToken);
-          originalRequest.headers.Authorization = `Bearer ${data.token}`;
+          useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
           return api(originalRequest);
         } catch {
           useAuthStore.getState().logout();
