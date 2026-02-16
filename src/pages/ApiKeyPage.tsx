@@ -118,7 +118,7 @@ const ApiKeyPage = () => {
           Usage Example
         </h3>
         <pre className="bg-background/50 rounded-lg p-4 text-xs text-muted-foreground overflow-x-auto">
-{`curl -X POST ${API.files?.upload || 'https://api.vaultdrop.io/v1/files/uploads'} \\
+{`curl -X POST ${API.files?.upload || 'https://api.ftp-server.io/v1/files/uploads'} \\
   -H "x-api-key: YOUR_API_KEY" \\
   -F "file=@photo.jpg"`}
         </pre>
