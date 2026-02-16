@@ -37,7 +37,7 @@ const Index = () => {
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Shield className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold gradient-text">VaultDrop</span>
+          <span className="text-xl font-bold gradient-text">FTP-Server</span>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -118,9 +118,20 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border/50 py-8 text-center">
+      <footer className="relative z-10 border-t border-border/50 py-8 text-center space-y-2">
         <p className="text-sm text-muted-foreground">
-          © 2026 VaultDrop. All rights reserved.
+          © 2026 FTP-Server. All rights reserved.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Developed by{' '}
+          <a
+            href="https://www.linkedin.com/in/muzamil-bashir-gashroo-8268b4228/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-primary/80 font-medium transition-colors"
+          >
+            Muzamil Gashroo
+          </a>
         </p>
       </footer>
     </div>

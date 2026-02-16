@@ -56,7 +56,7 @@ const Login = () => {
         <div className="glass-card p-8 glow-purple">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
-              <h1 className="text-3xl font-bold gradient-text">VaultDrop</h1>
+              <h1 className="text-3xl font-bold gradient-text">FTP-Server</h1>
             </Link>
             <p className="text-muted-foreground mt-2">Sign in to your account</p>
           </div>
