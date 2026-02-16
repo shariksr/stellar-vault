@@ -1,29 +1,29 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Upload, Lock, Code, ArrowRight, Sparkles } from 'lucide-react';
+import { Shield, Upload, Lock, Code, ArrowRight } from 'lucide-react';
 
 const features = [
-  {
-    icon: Shield,
-    title: 'Secure Storage',
-    description: 'Military-grade encryption for all your files',
-  },
-  {
-    icon: Upload,
-    title: 'Easy Uploads',
-    description: 'Drag & drop with blazing-fast speeds',
-  },
-  {
-    icon: Lock,
-    title: 'Access Control',
-    description: 'Premium-tier security and permissions',
-  },
-  {
-    icon: Code,
-    title: 'Developer API',
-    description: 'Full REST API with personal key',
-  },
-];
+{
+  icon: Shield,
+  title: 'Secure Storage',
+  description: 'Military-grade encryption for all your files'
+},
+{
+  icon: Upload,
+  title: 'Easy Uploads',
+  description: 'Drag & drop with blazing-fast speeds'
+},
+{
+  icon: Lock,
+  title: 'Access Control',
+  description: 'Premium-tier security and permissions'
+},
+{
+  icon: Code,
+  title: 'Developer API',
+  description: 'Full REST API with personal key'
+}];
+
 
 const Index = () => {
   return (
@@ -37,19 +37,19 @@ const Index = () => {
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Shield className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold gradient-text">FTP-Server</span>
+          <span className="text-xl font-bold gradient-text">VaultDrop</span>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
+            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+
             Sign In
           </Link>
           <Link
             to="/signup"
-            className="px-4 py-2 rounded-lg gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
+            className="px-4 py-2 rounded-lg gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+
             Get Started
           </Link>
         </div>
@@ -60,10 +60,10 @@ const Index = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
+          transition={{ duration: 0.7 }}>
+
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card mb-8 text-sm text-muted-foreground">
-            <Sparkles className="h-4 w-4 text-primary" />
+            
             Secure file management for teams & developers
           </div>
 
@@ -82,14 +82,14 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/signup"
-              className="px-8 py-3.5 rounded-lg gradient-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-purple flex items-center gap-2"
-            >
+              className="px-8 py-3.5 rounded-lg gradient-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-purple flex items-center gap-2">
+
               Start Free <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/login"
-              className="px-8 py-3.5 rounded-lg glass-card glass-hover text-foreground font-semibold"
-            >
+              className="px-8 py-3.5 rounded-lg glass-card glass-hover text-foreground font-semibold">
+
               Sign In
             </Link>
           </div>
@@ -99,43 +99,32 @@ const Index = () => {
       {/* Features */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {features.map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-              className="glass-card p-6 group hover:glow-purple transition-all duration-500"
-            >
+          {features.map((feature, i) =>
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+            className="glass-card p-6 group hover:glow-purple transition-all duration-500">
+
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <feature.icon className="h-6 w-6 text-primary" />
               </div>
               <h3 className="text-base font-semibold text-foreground mb-2">{feature.title}</h3>
               <p className="text-sm text-muted-foreground">{feature.description}</p>
             </motion.div>
-          ))}
+          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border/50 py-8 text-center space-y-2">
+      <footer className="relative z-10 border-t border-border/50 py-8 text-center">
         <p className="text-sm text-muted-foreground">
-          © 2026 FTP-Server. All rights reserved.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Developed by{' '}
-          <a
-            href="https://www.linkedin.com/in/muzamil-bashir-gashroo-8268b4228/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
-          >
-            Muzamil Gashroo
-          </a>
+          © 2026 VaultDrop. All rights reserved.
         </p>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
