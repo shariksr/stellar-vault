@@ -20,14 +20,13 @@ export interface UserProfile {
 
 export interface FileItem {
   _id: string;
-  name: string;
-  originalName: string;
+  userID: string;
+  fileId: string;
+  filename: string;
+  folder: string;
   type: string;
-  size: number;
-  url: string;
-  userId: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface AuthResponse {
