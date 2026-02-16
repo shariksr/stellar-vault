@@ -60,7 +60,7 @@ const DashboardSidebar = () => {
               animate={{ opacity: 1 }}
               className="text-xl font-bold gradient-text"
             >
-              VaultDrop
+              FTP-Server
             </motion.span>
           )}
         </div>
