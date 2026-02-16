@@ -21,7 +21,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setTokens } = useAuthStore();
+  const { setTokens, fetchProfile } = useAuthStore();
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -32,6 +32,7 @@ const Login = () => {
     try {
       const res = await api.post(API.auth.login, data);
       setTokens(res.data.token, res.data.refreshToken);
+      await fetchProfile();
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (err: any) {
