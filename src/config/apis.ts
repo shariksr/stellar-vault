@@ -10,6 +10,7 @@ export const API = {
     refresh: `${BASE_URL}/v1/auth/refresh`,
     verifyEmail: `${BASE_URL}/v1/auth/verify-email`,
     logout: `${BASE_URL}/v1/auth/logout`,
+    forgotPassword: `${BASE_URL}/v1/auth/forgot-password`,
   },
 
   files: {
