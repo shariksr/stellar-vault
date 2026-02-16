@@ -46,14 +46,23 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () =>
+      logout: async () => {
+        const refreshToken = useAuthStore.getState().refreshToken;
+        if (refreshToken) {
+          try {
+            await api.post(API.auth.logout, { refreshToken });
+          } catch {
+            // proceed with local logout regardless
+          }
+        }
         set({
           token: null,
           refreshToken: null,
           user: null,
           subscription: null,
           isAuthenticated: false,
-        }),
+        });
+      },
     }),
     {
       name: 'vault-auth',

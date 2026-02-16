@@ -36,7 +36,13 @@ const Login = () => {
       toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Login failed');
+      const status = err.response?.status;
+      const message = err.response?.data?.message || 'Login failed';
+      if (status === 403 && message.toLowerCase().includes('verify')) {
+        toast.error('Please verify your email before signing in. Check your inbox.');
+      } else {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
     }
