@@ -12,6 +12,7 @@ export const API = {
     logout: `${BASE_URL}/v1/auth/logout`,
     forgotPassword: `${BASE_URL}/v1/auth/forgot-password`,
     resetPassword: `${BASE_URL}/v1/auth/reset-password`,
+    changePassword: `${BASE_URL}/v1/auth/change-password`, // TODO: update route when backend is ready
   },
 
   files: {
