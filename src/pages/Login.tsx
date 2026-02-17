@@ -49,27 +49,40 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background noise-bg p-4 relative overflow-hidden">
-      {/* Background orbs */}
-      <div className="absolute top-1/4 -left-32 w-64 h-64 rounded-full bg-neon-purple/20 blur-[100px] animate-pulse-glow" />
-      <div className="absolute bottom-1/4 -right-32 w-64 h-64 rounded-full bg-neon-blue/20 blur-[100px] animate-pulse-glow" />
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
+      <motion.div
+        animate={{ x: [0, 20, -15, 0], y: [0, -15, 10, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+        className="absolute top-1/4 -left-32 w-64 h-64 rounded-full bg-primary/8 blur-[100px]"
+      />
+      <motion.div
+        animate={{ x: [0, -20, 15, 0], y: [0, 15, -10, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+        className="absolute bottom-1/4 -right-32 w-64 h-64 rounded-full bg-google-green/8 blur-[100px]"
+      />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 120, damping: 14, mass: 0.8 }}
         className="w-full max-w-md"
       >
-        <div className="glass-card p-8 glow-purple">
+        <div className="glass-card p-8 elevated">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
-              <h1 className="text-3xl font-bold gradient-text">FTP-Server</h1>
+              <motion.h1
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                className="text-3xl font-bold font-display gradient-text"
+              >
+                FTP-Server
+              </motion.h1>
             </Link>
             <p className="text-muted-foreground mt-2">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}>
               <label className="text-sm font-medium text-foreground/80 mb-1.5 block">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -77,13 +90,13 @@ const Login = () => {
                   {...register('email')}
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground"
                 />
               </div>
               {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.2 }}>
               <label className="text-sm font-medium text-foreground/80 mb-1.5 block">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -91,7 +104,7 @@ const Login = () => {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 rounded-lg bg-secondary/50 border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
+                  className="w-full pl-10 pr-12 py-3 rounded-xl bg-secondary/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-foreground placeholder:text-muted-foreground"
                 />
                 <button
                   type="button"
@@ -102,7 +115,7 @@ const Login = () => {
                 </button>
               </div>
               {errors.password && <p className="text-destructive text-xs mt-1">{errors.password.message}</p>}
-            </div>
+            </motion.div>
 
             <div className="flex justify-end">
               <Link to="/forgot-password" className="text-sm text-primary hover:text-primary/80 transition-colors">
@@ -110,14 +123,17 @@ const Login = () => {
               </Link>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 15 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-lg gradient-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 glow-primary"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               Sign In
-            </button>
+            </motion.button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
