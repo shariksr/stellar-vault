@@ -9,10 +9,11 @@ import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { API } from '@/config/apis';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { passwordSchema } from '@/lib/password-validation';
 
 const resetSchema = z.object({
-  newPassword: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Please confirm your password'),
+  newPassword: passwordSchema,
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
 }).refine((data) => data.newPassword === data.confirmPassword, { message: "Passwords don't match", path: ['confirmPassword'] });
 
 type ResetForm = z.infer<typeof resetSchema>;
