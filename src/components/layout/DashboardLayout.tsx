@@ -9,6 +9,7 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const { fetchProfile } = useAuthStore();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const success = searchParams.get('success');
     const canceled = searchParams.get('canceled');

@@ -43,8 +43,9 @@ const Signup = () => {
         setShowVerifyDialog(false);
         navigate('/login');
       }, 5000);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Signup failed');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      toast.error(axiosErr.response?.data?.message || 'Signup failed');
     } finally {
       setLoading(false);
     }
