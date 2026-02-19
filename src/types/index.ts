@@ -23,8 +23,10 @@ export interface FileItem {
   userID: string;
   fileId: string;
   filename: string;
+  displayName?: string;
   folder: string;
   type: string;
+  size?: number;
   createdAt: string;
   updatedAt?: string;
 }

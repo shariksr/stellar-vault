@@ -19,6 +19,8 @@ export const API = {
     list: `${BASE_URL}/v1/files/list`,
     upload: `${BASE_URL}/v1/files/uploads`,
     download: (fileId: string) => `${BASE_URL}/v1/files/downloads/${fileId}`,
+    delete: (fileId: string) => `${BASE_URL}/v1/files/delete/${fileId}`,
+    rename: (fileId: string) => `${BASE_URL}/v1/files/rename/${fileId}`,
   },
 
   payments: {
