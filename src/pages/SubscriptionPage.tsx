@@ -24,6 +24,7 @@ const SubscriptionPage = () => {
   const { subscription, fetchProfile } = useAuthStore();
   const isPremium = subscription?.plan === 'premium' && subscription?.status === 'active';
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setShowResultDialog('success');

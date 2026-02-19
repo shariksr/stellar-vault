@@ -30,8 +30,9 @@ const SettingsPage = () => {
       await api.post(API.auth.changePassword, { oldPassword, newPassword });
       toast.success('Password changed successfully');
       setOldPassword(''); setNewPassword(''); setConfirmPassword('');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to change password');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      toast.error(axiosErr.response?.data?.message || 'Failed to change password');
     } finally {
       setChanging(false);
     }

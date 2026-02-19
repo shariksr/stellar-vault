@@ -33,8 +33,9 @@ const ResetPassword = () => {
     try {
       await api.post(API.auth.resetPassword, { token, newPassword: data.newPassword });
       setShowSuccessDialog(true);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to reset password');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      toast.error(axiosErr.response?.data?.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }

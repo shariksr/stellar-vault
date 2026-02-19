@@ -18,9 +18,10 @@ const VerifyEmail = () => {
         await api.get(`${API.auth.verifyEmail}?token=${token}`);
         setStatus('success');
         setMessage('Your email has been verified successfully!');
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const axiosErr = err as { response?: { data?: { message?: string } } };
         setStatus('error');
-        setMessage(err.response?.data?.message || 'Verification failed. The link may be invalid or expired.');
+        setMessage(axiosErr.response?.data?.message || 'Verification failed. The link may be invalid or expired.');
       }
     };
     verify();

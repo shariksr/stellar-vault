@@ -35,9 +35,10 @@ const Login = () => {
       await fetchProfile();
       toast.success('Welcome back!');
       navigate('/dashboard');
-    } catch (err: any) {
-      const status = err.response?.status;
-      const message = err.response?.data?.message || 'Login failed';
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { status?: number; data?: { message?: string } } };
+      const status = axiosErr.response?.status;
+      const message = axiosErr.response?.data?.message || 'Login failed';
       if (status === 403 && message.toLowerCase().includes('verify')) {
         toast.error('Please verify your email before signing in. Check your inbox.');
       } else {
