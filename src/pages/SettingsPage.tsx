@@ -5,6 +5,7 @@ import { User, Mail, Calendar, Shield, Lock, Loader2, Eye, EyeOff } from 'lucide
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { API } from '@/config/apis';
+import { validatePassword } from '@/lib/password-validation';
 
 const cardDrop = (delay: number) => ({
   initial: { opacity: 0, y: -40 } as const,
@@ -23,7 +24,8 @@ const SettingsPage = () => {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword.length < 6) { toast.error('New password must be at least 6 characters'); return; }
+    const pwError = validatePassword(newPassword);
+    if (pwError) { toast.error(pwError); return; }
     if (newPassword !== confirmPassword) { toast.error('Passwords do not match'); return; }
     setChanging(true);
     try {
