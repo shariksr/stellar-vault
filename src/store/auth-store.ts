@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { User, Subscription } from '@/types';
 import api from '@/lib/axios';
 import { API } from '@/config/apis';
@@ -66,6 +66,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'vault-auth',
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
