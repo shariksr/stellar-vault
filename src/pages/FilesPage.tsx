@@ -85,9 +85,12 @@ const FilesPage = () => {
   }, [renamingId]);
 
   const { data: files = [], isLoading } = useQuery({
-    queryKey: ['files'],
+    queryKey: ['files', subscription?.key],
+    enabled: !!subscription?.key,
     queryFn: async () => {
-      const res = await api.get(API.files.list);
+      const res = await axios.get(API.files.list, {
+        headers: { 'x-api-key': subscription!.key },
+      });
       return res.data as FileItem[];
     },
   });
