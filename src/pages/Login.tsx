@@ -9,11 +9,11 @@ import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { API } from '@/config/apis';
 import { useAuthStore } from '@/store/auth-store';
-import { passwordSchema } from '@/lib/password-validation';
+
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: passwordSchema,
+  password: z.string().min(1, 'Password is required'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
