@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Upload, Lock, Code, ArrowRight } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const features = [
   { icon: Shield, title: 'Secure Storage', description: 'Military-grade encryption for all your files', color: 'bg-google-blue/10 text-google-blue' },
@@ -55,6 +56,9 @@ const Index = () => {
           <span className="text-xl font-bold font-display gradient-text">FTP-Server</span>
         </motion.div>
         <div className="flex items-center gap-3">
+          <div className="w-10">
+            <ThemeToggle collapsed />
+          </div>
           <Link
             to="/login"
             className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
