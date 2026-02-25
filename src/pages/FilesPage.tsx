@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Grid3X3, List, Search, FileText, Image, Video, File,
-  Download, HardDrive, Loader2, Pencil, Trash2, Check, X, CheckSquare, Square,
+  Download, HardDrive, Loader2, Pencil, Trash2, Check, X, CheckSquare, Square, QrCode, ExternalLink, Copy,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import type { FileFilter, ViewMode, FileItem } from '@/types';
@@ -16,6 +16,10 @@ import {
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
   AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const filterOptions: { label: string; value: FileFilter; icon: React.ElementType }[] = [
   { label: 'All', value: 'all', icon: HardDrive },
@@ -68,6 +72,8 @@ const FilesPage = () => {
   const [filter, setFilter] = useState<FileFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [signedUrlData, setSignedUrlData] = useState<{ url: string; signedQR: string; expiresIn: number; fileName: string } | null>(null);
+  const [signedUrlLoading, setSignedUrlLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState('');
@@ -119,22 +125,61 @@ const FilesPage = () => {
   const handleDownload = async (file: FileItem) => {
     if (!checkPremium()) return;
     setDownloadingId(file.fileId);
+    setSignedUrlLoading(true);
     try {
-      const res = await axios.get(API.files.download(file.fileId), {
+      const res = await axios.post(API.files.generateSignedUrl(file.fileId), {}, {
         headers: { 'x-api-key': subscription!.key },
-        responseType: 'blob',
       });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = getDisplayName(file);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      toast.success(`${getDisplayName(file)} downloaded`);
+      setSignedUrlData({
+        url: res.data.url,
+        signedQR: res.data.signedQR,
+        expiresIn: res.data.expiresIn,
+        fileName: getDisplayName(file),
+      });
     } catch {
-      toast.error('Download failed');
+      toast.error('Failed to generate download link');
     } finally {
       setDownloadingId(null);
+      setSignedUrlLoading(false);
+    }
+  };
+
+  const handleSignedDownload = () => {
+    if (!signedUrlData) return;
+    window.open(signedUrlData.url, '_blank');
+    toast.success(`Downloading ${signedUrlData.fileName}`);
+  };
+
+  const handleCopyLink = async () => {
+    if (!signedUrlData) return;
+    try {
+      await navigator.clipboard.writeText(signedUrlData.url);
+      toast.success('Download link copied to clipboard');
+    } catch {
+      toast.error('Failed to copy link');
+    }
+  };
+
+  const handleRegenerateSignedUrl = async () => {
+    if (!signedUrlData) return;
+    const file = files.find(f => getDisplayName(f) === signedUrlData.fileName);
+    if (!file) return;
+    setSignedUrlLoading(true);
+    try {
+      const res = await axios.post(API.files.generateSignedUrl(file.fileId), {}, {
+        headers: { 'x-api-key': subscription!.key },
+      });
+      setSignedUrlData({
+        url: res.data.url,
+        signedQR: res.data.signedQR,
+        expiresIn: res.data.expiresIn,
+        fileName: getDisplayName(file),
+      });
+      toast.info('Download link regenerated');
+    } catch {
+      toast.error('Failed to regenerate download link');
+    } finally {
+      setSignedUrlLoading(false);
     }
   };
 
@@ -536,6 +581,53 @@ const FilesPage = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Signed URL Download Modal */}
+      <Dialog open={!!signedUrlData} onOpenChange={(open) => !open && setSignedUrlData(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5 text-primary" />
+              Download File
+            </DialogTitle>
+            <DialogDescription>
+              {signedUrlData?.fileName} — link expires in {Math.floor((signedUrlData?.expiresIn ?? 0) / 60)} minutes
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-6 py-4">
+            {/* QR Code */}
+            {signedUrlData?.signedQR && (
+              <div className="bg-background border border-border rounded-xl p-4">
+                <img
+                  src={signedUrlData.signedQR}
+                  alt="Download QR Code"
+                  className="w-48 h-48 object-contain"
+                />
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground text-center">
+              Scan QR code or use the buttons below to download
+            </p>
+            {/* Actions */}
+            <div className="flex flex-col w-full gap-2">
+              <Button onClick={handleSignedDownload} className="w-full gap-2">
+                <ExternalLink className="h-4 w-4" />
+                Download Now
+              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={handleCopyLink} className="flex-1 gap-2">
+                  <Copy className="h-4 w-4" />
+                  Copy Link
+                </Button>
+                <Button variant="outline" onClick={handleRegenerateSignedUrl} disabled={signedUrlLoading} className="flex-1 gap-2">
+                  {signedUrlLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <QrCode className="h-4 w-4" />}
+                  Regenerate
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
