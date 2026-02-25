@@ -50,7 +50,7 @@ const UploadPage = () => {
     setUploading(true);
     for (const file of files) {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('files', file);
       try {
         await axios.post(API.files.upload, formData, {
           headers: { 'x-api-key': subscription.key, 'Content-Type': 'multipart/form-data' },
