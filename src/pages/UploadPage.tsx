@@ -1,11 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Cloud, FileUp, X, CheckCircle2, Loader2, KeyRound, ShieldCheck } from 'lucide-react';
+import { Upload, Cloud, FileUp, X, CheckCircle2, Loader2, KeyRound, ShieldCheck, Timer } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { API } from '@/config/apis';
 import { Link } from 'react-router-dom';
+
+const TOKEN_TTL = 300; // 5 minutes in seconds
 
 type UploadStep = 'select' | 'token' | 'uploading' | 'done';
 
@@ -16,9 +18,38 @@ const UploadPage = () => {
   const [step, setStep] = useState<UploadStep>('select');
   const [uploadToken, setUploadToken] = useState<string | null>(null);
   const [generatingToken, setGeneratingToken] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(TOKEN_TTL);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { subscription } = useAuthStore();
 
   const isPremium = subscription?.plan === 'premium' && subscription?.status === 'active';
+
+  // Countdown timer for token expiry
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setSecondsLeft(TOKEN_TTL);
+    timerRef.current = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => stopTimer();
+  }, [stopTimer]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -75,6 +106,7 @@ const UploadPage = () => {
       if (token) {
         setUploadToken(token);
         setStep('token');
+        startTimer();
         toast.success('Upload token ready — you can now upload');
       }
     } catch {
@@ -84,12 +116,22 @@ const UploadPage = () => {
     }
   };
 
+  // Auto-regenerate token when countdown hits 0
+  useEffect(() => {
+    if (step === 'token' && secondsLeft === 0) {
+      toast.info('Token expired — generating a new one…');
+      handlePrepareUpload();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft, step]);
+
   const uploadFiles = async () => {
     if (!uploadToken) {
       toast.error('No upload token available');
       return;
     }
     setStep('uploading');
+    stopTimer();
 
     const formData = new FormData();
     for (const file of files) {
@@ -120,6 +162,8 @@ const UploadPage = () => {
     setUploadProgress({});
     setStep('select');
     setUploadToken(null);
+    stopTimer();
+    setSecondsLeft(TOKEN_TTL);
   };
 
   if (!isPremium) {
@@ -241,13 +285,37 @@ const UploadPage = () => {
             <ShieldCheck className="h-7 w-7 text-primary" />
           </div>
           <h3 className="text-lg font-semibold font-display text-foreground mb-1">Upload Token Ready</h3>
+
+          {/* Countdown timer */}
+          <div className="flex items-center justify-center gap-2 my-3">
+            <Timer className={`h-4 w-4 ${secondsLeft <= 30 ? 'text-destructive' : 'text-muted-foreground'}`} />
+            <span className={`text-sm font-mono font-semibold ${secondsLeft <= 30 ? 'text-destructive' : 'text-muted-foreground'}`}>
+              {Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}
+            </span>
+            {generatingToken && (
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" /> Refreshing…
+              </span>
+            )}
+          </div>
+          {/* Progress bar for timer */}
+          <div className="w-48 h-1.5 bg-secondary rounded-full overflow-hidden mx-auto mb-5">
+            <motion.div
+              className={`h-full rounded-full ${secondsLeft <= 30 ? 'bg-destructive' : 'bg-primary'}`}
+              initial={{ width: '100%' }}
+              animate={{ width: `${(secondsLeft / TOKEN_TTL) * 100}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+
           <p className="text-muted-foreground text-sm mb-5">Your secure upload session is active. Click below to start uploading.</p>
           <div className="flex justify-center gap-3">
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={uploadFiles}
-              className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors flex items-center gap-2 glow-primary"
+              disabled={generatingToken}
+              className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2 glow-primary"
             >
               <Upload className="h-4 w-4" />
               Upload All
