@@ -6,7 +6,7 @@ const features = [
   { icon: Shield, title: 'Secure Storage', description: 'Military-grade encryption for all your files', color: 'bg-google-blue/10 text-google-blue' },
   { icon: Upload, title: 'Easy Uploads', description: 'Drag & drop with blazing-fast speeds', color: 'bg-google-green/10 text-google-green' },
   { icon: Lock, title: 'Access Control', description: 'Premium-tier security and permissions', color: 'bg-google-yellow/10 text-google-yellow' },
-  { icon: Code, title: 'Developer API', description: 'Full REST API with personal key', color: 'bg-google-red/10 text-google-red' },
+  { icon: Code, title: 'Developer SDK', description: 'Full REST API with personal key', color: 'bg-google-red/10 text-google-red' },
 ];
 
 const gravityDrop = {
