@@ -72,7 +72,7 @@ const FilesPage = () => {
   const [filter, setFilter] = useState<FileFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const [signedUrlData, setSignedUrlData] = useState<{ url: string; signedQR: string; expiresIn: number; fileName: string } | null>(null);
+  const [signedUrlData, setSignedUrlData] = useState<{ url: string; qrCode: string; expiresIn: number; fileName: string } | null>(null);
   const [signedUrlLoading, setSignedUrlLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -132,7 +132,7 @@ const FilesPage = () => {
       });
       setSignedUrlData({
         url: res.data.url,
-        signedQR: res.data.signedQR,
+        qrCode: res.data.qrCode,
         expiresIn: res.data.expiresIn,
         fileName: getDisplayName(file),
       });
@@ -171,7 +171,7 @@ const FilesPage = () => {
       });
       setSignedUrlData({
         url: res.data.url,
-        signedQR: res.data.signedQR,
+        qrCode: res.data.qrCode,
         expiresIn: res.data.expiresIn,
         fileName: getDisplayName(file),
       });
@@ -596,10 +596,10 @@ const FilesPage = () => {
           </DialogHeader>
           <div className="flex flex-col items-center gap-6 py-4">
             {/* QR Code */}
-            {signedUrlData?.signedQR && (
+            {signedUrlData?.qrCode && (
               <div className="bg-background border border-border rounded-xl p-4">
                 <img
-                  src={signedUrlData.signedQR}
+                  src={signedUrlData.qrCode}
                   alt="Download QR Code"
                   className="w-48 h-48 object-contain"
                 />
