@@ -7,7 +7,7 @@ import axios from 'axios';
 import { API } from '@/config/apis';
 import { Link } from 'react-router-dom';
 
-const TOKEN_TTL = 300; // 5 minutes in seconds
+const DEFAULT_TOKEN_TTL = 300; // fallback only
 
 type UploadStep = 'select' | 'token' | 'uploading' | 'done';
 
@@ -18,7 +18,8 @@ const UploadPage = () => {
   const [step, setStep] = useState<UploadStep>('select');
   const [uploadToken, setUploadToken] = useState<string | null>(null);
   const [generatingToken, setGeneratingToken] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(TOKEN_TTL);
+  const [secondsLeft, setSecondsLeft] = useState(DEFAULT_TOKEN_TTL);
+  const tokenTtlRef = useRef(DEFAULT_TOKEN_TTL);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { subscription } = useAuthStore();
 
@@ -27,7 +28,7 @@ const UploadPage = () => {
   // Countdown timer for token expiry
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    setSecondsLeft(TOKEN_TTL);
+    setSecondsLeft(tokenTtlRef.current);
     timerRef.current = setInterval(() => {
       setSecondsLeft((prev) => {
         if (prev <= 1) {
@@ -77,16 +78,15 @@ const UploadPage = () => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const generateToken = async (retryCount = 0): Promise<string | null> => {
+  const generateToken = async (retryCount = 0): Promise<{ token: string; expiresIn: number } | null> => {
     if (!subscription?.key) return null;
     try {
       const { data } = await axios.post(API.files.generateUploadToken, {}, {
         headers: { 'x-api-key': subscription.key },
       });
-      return data.uploadToken;
+      return { token: data.uploadToken, expiresIn: data.expiresIn ?? DEFAULT_TOKEN_TTL };
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.status === 400 && retryCount < 3) {
-        // Active token exists — wait and retry
         toast.info('Waiting for existing upload token to expire…');
         await new Promise((r) => setTimeout(r, 3000));
         return generateToken(retryCount + 1);
@@ -102,9 +102,11 @@ const UploadPage = () => {
     }
     setGeneratingToken(true);
     try {
-      const token = await generateToken();
-      if (token) {
-        setUploadToken(token);
+      const result = await generateToken();
+      if (result) {
+        setUploadToken(result.token);
+        tokenTtlRef.current = result.expiresIn;
+        setSecondsLeft(result.expiresIn);
         setStep('token');
         startTimer();
         toast.success('Upload token ready — you can now upload');
@@ -163,7 +165,7 @@ const UploadPage = () => {
     setStep('select');
     setUploadToken(null);
     stopTimer();
-    setSecondsLeft(TOKEN_TTL);
+    setSecondsLeft(DEFAULT_TOKEN_TTL);
   };
 
   if (!isPremium) {
