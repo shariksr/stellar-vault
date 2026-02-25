@@ -20,6 +20,7 @@ export const API = {
     upload: `${BASE_URL}/v1/files/uploads`,
     generateUploadToken: `${BASE_URL}/v1/files/generate-upload-token`,
     download: (fileId: string) => `${BASE_URL}/v1/files/downloads/${fileId}`,
+    generateSignedUrl: (fileId: string) => `${BASE_URL}/v1/files/generate-signed-url/${fileId}`,
     delete: (fileId: string) => `${BASE_URL}/v1/files/delete/${fileId}`,
     deleteAll: `${BASE_URL}/v1/files/delete-all`,
     rename: (fileId: string) => `${BASE_URL}/v1/files/rename/${fileId}`,
