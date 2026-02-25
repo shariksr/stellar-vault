@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/store/auth-store';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const navItems = [
   { label: 'Files', path: '/dashboard', icon: FolderOpen },
@@ -132,7 +133,7 @@ const DashboardSidebar = () => {
         </nav>
 
         {/* User section */}
-        <div className="p-3 border-t border-border/50">
+        <div className="p-3 border-t border-border/50 space-y-1">
           <div className={`flex items-center gap-3 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
             <motion.div
               whileHover={{ scale: 1.1 }}
@@ -148,6 +149,7 @@ const DashboardSidebar = () => {
               </div>
             )}
           </div>
+          <ThemeToggle collapsed={collapsed} />
           <motion.button
             whileHover={{ x: 3 }}
             whileTap={{ scale: 0.95 }}
