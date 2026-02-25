@@ -1,13 +1,39 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Shield, Upload, Lock, Code, ArrowRight } from 'lucide-react';
+import {
+  Shield,
+  Upload,
+  Lock,
+  Code,
+  ArrowRight,
+  QrCode,
+  Key,
+  FileStack,
+  CreditCard,
+  Server,
+  Layers,
+  Terminal,
+  Zap,
+} from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 const features = [
-  { icon: Shield, title: 'Secure Storage', description: 'Military-grade encryption for all your files', color: 'bg-google-blue/10 text-google-blue' },
-  { icon: Upload, title: 'Easy Uploads', description: 'Drag & drop with blazing-fast speeds', color: 'bg-google-green/10 text-google-green' },
-  { icon: Lock, title: 'Access Control', description: 'Premium-tier security and permissions', color: 'bg-google-yellow/10 text-google-yellow' },
-  { icon: Code, title: 'Developer SDK', description: 'Full REST API with personal key', color: 'bg-google-red/10 text-google-red' },
+  { icon: Lock, title: 'Encrypted Storage', description: 'End-to-end secure file handling with controlled disk access and access validation.', color: 'bg-google-blue/10 text-google-blue' },
+  { icon: Key, title: 'Signed Download URLs', description: 'Generate temporary, expiring links secured via HMAC signatures.', color: 'bg-google-green/10 text-google-green' },
+  { icon: Shield, title: 'Upload Token System', description: 'Time-limited upload permissions for secure client-side uploads.', color: 'bg-google-yellow/10 text-google-yellow' },
+  { icon: Code, title: 'Developer SDK', description: 'Full REST API + SDK for seamless backend integration.', color: 'bg-google-red/10 text-google-red' },
+  { icon: FileStack, title: 'Multi-File Support', description: 'Images, videos, PDFs, documents — with smart classification.', color: 'bg-google-blue/10 text-google-blue' },
+  { icon: CreditCard, title: 'Subscription & API Keys', description: 'Premium-gated access with per-user API authentication.', color: 'bg-google-green/10 text-google-green' },
+  { icon: QrCode, title: 'QR-Based Sharing', description: 'Instant secure file sharing via temporary QR links.', color: 'bg-google-yellow/10 text-google-yellow' },
+];
+
+const builtFor = [
+  { icon: Server, label: 'SaaS Platforms' },
+  { icon: Terminal, label: 'Developer Tools' },
+  { icon: Layers, label: 'Internal File Systems' },
+  { icon: Shield, label: 'Secure Asset Management' },
+  { icon: Zap, label: 'Expiring File Links' },
+  { icon: Upload, label: 'Temporary File Access' },
 ];
 
 const gravityDrop = {
@@ -89,19 +115,19 @@ const Index = () => {
             transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.1 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 mb-8 text-sm text-muted-foreground"
           >
-            ✨ Secure file management for teams & developers
+            🔒 Developer-first secure file infrastructure
           </motion.div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold font-display text-foreground leading-tight mb-6">
-            Your files,{' '}
-            <span className="gradient-text">encrypted</span>
+            Secure file{' '}
+            <span className="gradient-text">infrastructure</span>
             <br />
-            and always accessible
+            for modern applications
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Upload, store, and manage your files with enterprise-grade security.
-            API access included for developers.
+            Upload, manage, and distribute files with expiring signed URLs, API key authentication, QR-based sharing, and enterprise-grade security.{' '}
+            <span className="text-foreground font-medium">Built for developers. Ready for production.</span>
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -110,7 +136,7 @@ const Index = () => {
                 to="/signup"
                 className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors glow-primary flex items-center gap-2"
               >
-                Start Free <ArrowRight className="h-4 w-4" />
+                Start Building <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
@@ -126,8 +152,17 @@ const Index = () => {
       </section>
 
       {/* Features - gravity drop */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pb-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="relative z-10 max-w-6xl mx-auto px-6 pb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-foreground mb-3">Infrastructure-Grade Capabilities</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">Everything you need to build secure file workflows — from upload tokens to expiring signed URLs.</p>
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {features.map((feature, i) => (
             <motion.div
               key={i}
@@ -152,6 +187,36 @@ const Index = () => {
               </motion.div>
               <h3 className="text-base font-semibold font-display text-foreground mb-2">{feature.title}</h3>
               <p className="text-sm text-muted-foreground">{feature.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Built For Section */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+          className="text-center mb-10"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-foreground mb-3">Built For</h2>
+          <p className="text-muted-foreground">Teams and products that demand secure, scalable file infrastructure.</p>
+        </motion.div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {builtFor.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              whileHover={{ y: -4, scale: 1.03 }}
+              className="glass-card p-4 flex flex-col items-center gap-2 text-center cursor-default"
+            >
+              <item.icon className="h-5 w-5 text-primary" />
+              <span className="text-xs font-medium text-foreground">{item.label}</span>
             </motion.div>
           ))}
         </div>
