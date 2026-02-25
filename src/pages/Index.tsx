@@ -208,14 +208,28 @@ const Index = () => {
           {builtFor.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              whileHover={{ y: -4, scale: 1.03 }}
+              initial={{ opacity: 0, y: -60, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{
+                type: 'spring',
+                stiffness: 120,
+                damping: 12,
+                mass: 0.8,
+                delay: i * 0.1,
+              }}
+              whileHover={{ y: -6, scale: 1.06, rotate: -2 }}
+              whileTap={{ scale: 0.95 }}
               className="glass-card p-4 flex flex-col items-center gap-2 text-center cursor-default"
             >
-              <item.icon className="h-5 w-5 text-primary" />
+              <motion.div
+                initial={{ rotate: -20 }}
+                whileInView={{ rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 200, damping: 10, delay: 0.3 + i * 0.1 }}
+              >
+                <item.icon className="h-5 w-5 text-primary" />
+              </motion.div>
               <span className="text-xs font-medium text-foreground">{item.label}</span>
             </motion.div>
           ))}
