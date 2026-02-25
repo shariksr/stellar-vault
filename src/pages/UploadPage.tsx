@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Cloud, FileUp, X, CheckCircle2, Loader2, KeyRound, ShieldCheck, Timer } from 'lucide-react';
+import { Upload, Cloud, FileUp, X, CheckCircle2, Loader2, KeyRound, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -285,29 +285,6 @@ const UploadPage = () => {
             <ShieldCheck className="h-7 w-7 text-primary" />
           </div>
           <h3 className="text-lg font-semibold font-display text-foreground mb-1">Upload Token Ready</h3>
-
-          {/* Countdown timer */}
-          <div className="flex items-center justify-center gap-2 my-3">
-            <Timer className={`h-4 w-4 ${secondsLeft <= 30 ? 'text-destructive' : 'text-muted-foreground'}`} />
-            <span className={`text-sm font-mono font-semibold ${secondsLeft <= 30 ? 'text-destructive' : 'text-muted-foreground'}`}>
-              {Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}
-            </span>
-            {generatingToken && (
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Loader2 className="h-3 w-3 animate-spin" /> Refreshing…
-              </span>
-            )}
-          </div>
-          {/* Progress bar for timer */}
-          <div className="w-48 h-1.5 bg-secondary rounded-full overflow-hidden mx-auto mb-5">
-            <motion.div
-              className={`h-full rounded-full ${secondsLeft <= 30 ? 'bg-destructive' : 'bg-primary'}`}
-              initial={{ width: '100%' }}
-              animate={{ width: `${(secondsLeft / TOKEN_TTL) * 100}%` }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
-
           <p className="text-muted-foreground text-sm mb-5">Your secure upload session is active. Click below to start uploading.</p>
           <div className="flex justify-center gap-3">
             <motion.button
