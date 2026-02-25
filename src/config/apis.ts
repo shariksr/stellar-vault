@@ -18,6 +18,7 @@ export const API = {
   files: {
     list: `${BASE_URL}/v1/files/list`,
     upload: `${BASE_URL}/v1/files/uploads`,
+    generateUploadToken: `${BASE_URL}/v1/files/generate-upload-token`,
     download: (fileId: string) => `${BASE_URL}/v1/files/downloads/${fileId}`,
     delete: (fileId: string) => `${BASE_URL}/v1/files/delete/${fileId}`,
     deleteAll: `${BASE_URL}/v1/files/delete-all`,
