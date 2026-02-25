@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Grid3X3, List, Search, FileText, Image, Video, File,
-  Download, HardDrive, Loader2, Pencil, Trash2, Check, X,
+  Download, HardDrive, Loader2, Pencil, Trash2, Check, X, CheckSquare, Square,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
 import type { FileFilter, ViewMode, FileItem } from '@/types';
@@ -73,6 +73,9 @@ const FilesPage = () => {
   const [renameValue, setRenameValue] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
   const [deleteConfirmFile, setDeleteConfirmFile] = useState<FileItem | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
   const renameInputRef = useRef<HTMLInputElement>(null);
   const { subscription } = useAuthStore();
   const queryClient = useQueryClient();
@@ -190,6 +193,51 @@ const FilesPage = () => {
     setRenameValue(getDisplayName(file));
   };
 
+  const toggleSelect = useCallback((fileId: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(fileId)) next.delete(fileId);
+      else next.add(fileId);
+      return next;
+    });
+  }, []);
+
+  const toggleSelectAll = useCallback(() => {
+    if (selectedIds.size === filteredFiles.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredFiles.map((f) => f.fileId)));
+    }
+  }, [filteredFiles, selectedIds.size]);
+
+  const handleBulkDelete = async () => {
+    if (!checkPremium()) return;
+    if (selectedIds.size === 0) return;
+    setBulkDeleting(true);
+    try {
+      const res = await axios.delete(API.files.deleteAll, {
+        headers: { 'x-api-key': subscription!.key },
+        data: { fileIds: Array.from(selectedIds) },
+      });
+      const deletedCount = res.data?.deletedCount ?? 0;
+      const failed: string[] = res.data?.failed ?? [];
+      queryClient.setQueryData(['files', subscription?.key], (old: FileItem[] | undefined) =>
+        old ? old.filter((f) => !selectedIds.has(f.fileId) || failed.includes(f.fileId)) : []
+      );
+      setSelectedIds(new Set(failed));
+      if (failed.length > 0) {
+        toast.warning(`${deletedCount} deleted, ${failed.length} failed`);
+      } else {
+        toast.success(`${deletedCount} file${deletedCount > 1 ? 's' : ''} deleted`);
+      }
+    } catch {
+      toast.error('Bulk delete failed');
+    } finally {
+      setBulkDeleting(false);
+      setBulkDeleteConfirm(false);
+    }
+  };
+
   const renderFileName = (file: FileItem) => {
     if (renamingId === file.fileId) {
       return (
@@ -299,6 +347,45 @@ const FilesPage = () => {
         ))}
       </div>
 
+      {/* Selection Bar */}
+      {filteredFiles.length > 0 && !isLoading && (
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="flex items-center gap-3"
+          >
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleSelectAll}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+            >
+              {selectedIds.size === filteredFiles.length && filteredFiles.length > 0 ? (
+                <CheckSquare className="h-4 w-4 text-primary" />
+              ) : (
+                <Square className="h-4 w-4" />
+              )}
+              {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
+            </motion.button>
+            {selectedIds.size > 0 && (
+              <motion.button
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setBulkDeleteConfirm(true)}
+                disabled={bulkDeleting}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 transition-all"
+              >
+                {bulkDeleting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                Delete Selected
+              </motion.button>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      )}
+
       {/* File Grid/List */}
       {isLoading ? (
         <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'space-y-3'}>
@@ -348,14 +435,23 @@ const FilesPage = () => {
                   animate="visible"
                   variants={gravityItem}
                   whileHover={{ y: -4, scale: 1.01, transition: { type: 'spring', stiffness: 400, damping: 15 } }}
-                  className={`glass-card group cursor-pointer
+                  className={`glass-card group cursor-pointer relative
                     ${viewMode === 'grid' ? 'p-4' : 'p-4 flex items-center gap-4'}
+                    ${selectedIds.has(file.fileId) ? 'ring-2 ring-primary' : ''}
                   `}
+                  onClick={() => toggleSelect(file.fileId)}
                 >
                   {viewMode === 'grid' ? (
                     <>
                       <div className="h-32 bg-secondary/50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-secondary transition-colors relative">
                         <Icon className="h-12 w-12 text-muted-foreground/40" />
+                        <div className="absolute top-2 left-2" onClick={e => e.stopPropagation()}>
+                          {selectedIds.has(file.fileId) ? (
+                            <CheckSquare className="h-5 w-5 text-primary" />
+                          ) : (
+                            <Square className="h-5 w-5 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
                         <div className="absolute top-2 right-2">
                           {renderActions(file)}
                         </div>
@@ -370,6 +466,13 @@ const FilesPage = () => {
                     </>
                   ) : (
                     <>
+                      <div className="shrink-0" onClick={e => e.stopPropagation()}>
+                        {selectedIds.has(file.fileId) ? (
+                          <CheckSquare className="h-4 w-4 text-primary" />
+                        ) : (
+                          <Square className="h-4 w-4 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </div>
                       <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center shrink-0">
                         <Icon className="h-5 w-5 text-muted-foreground" />
                       </div>
@@ -407,6 +510,28 @@ const FilesPage = () => {
             >
               {deletingId ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <AlertDialog open={bulkDeleteConfirm} onOpenChange={(open) => !open && setBulkDeleteConfirm(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedIds.size} file{selectedIds.size > 1 ? 's' : ''}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <span className="font-medium text-foreground">{selectedIds.size} file{selectedIds.size > 1 ? 's' : ''}</span>? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {bulkDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Delete All
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

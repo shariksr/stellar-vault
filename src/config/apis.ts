@@ -20,6 +20,7 @@ export const API = {
     upload: `${BASE_URL}/v1/files/uploads`,
     download: (fileId: string) => `${BASE_URL}/v1/files/downloads/${fileId}`,
     delete: (fileId: string) => `${BASE_URL}/v1/files/delete/${fileId}`,
+    deleteAll: `${BASE_URL}/v1/files/delete-all`,
     rename: (fileId: string) => `${BASE_URL}/v1/files/rename/${fileId}`,
   },
 
