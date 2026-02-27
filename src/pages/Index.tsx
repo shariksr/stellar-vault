@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -17,6 +18,8 @@ import {
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import StarryBackground from '@/components/StarryBackground';
+import bgSound from '@/assets/interstellar-sound.mp3';
+import { Volume2, VolumeX } from 'lucide-react';
 
 
 const features = [
@@ -54,6 +57,29 @@ const gravityDrop = {
 };
 
 const Index = () => {
+  const [isMuted, setIsMuted] = useState(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio(bgSound);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3;
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleSound = () => {
+    if (!audioRef.current) return;
+    if (isMuted) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+    setIsMuted(!isMuted);
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden text-white">
       <StarryBackground />
@@ -74,9 +100,13 @@ const Index = () => {
           <span className="text-xl font-bold font-display text-blue-300">FTP-Server</span>
         </motion.div>
       <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-8 sm:w-10">
-            <ThemeToggle collapsed />
-          </div>
+          <button
+            onClick={toggleSound}
+            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg text-blue-200/60 hover:text-white transition-colors hover:bg-white/10"
+            aria-label={isMuted ? 'Unmute background music' : 'Mute background music'}
+          >
+            {isMuted ? <VolumeX className="h-4 w-4 sm:h-5 sm:w-5" /> : <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />}
+          </button>
           <Link
             to="/login"
             className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-blue-200/60 hover:text-white transition-colors"
