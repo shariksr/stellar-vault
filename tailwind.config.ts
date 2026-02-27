@@ -90,6 +90,18 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        am1: {
+          "0%": { transform: "translate(0,0) scale(1)" },
+          "100%": { transform: "translate(4%,7%) scale(1.1)" },
+        },
+        am2: {
+          "0%": { transform: "translate(0,0) scale(1.05)" },
+          "100%": { transform: "translate(-6%,-4%) scale(0.94)" },
+        },
+        am3: {
+          "0%": { transform: "translate(0,0) scale(1)" },
+          "100%": { transform: "translate(5%,-5%) scale(1.07)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
