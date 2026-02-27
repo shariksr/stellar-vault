@@ -86,7 +86,7 @@ const DashboardSidebar = () => {
         </motion.button>
 
         {/* Nav items */}
-        <nav className="flex-1 px-3 space-y-1">
+        <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item, idx) => {
             const isActive = location.pathname === item.path;
             return (
@@ -133,7 +133,7 @@ const DashboardSidebar = () => {
         </nav>
 
         {/* User section */}
-        <div className="p-3 border-t border-border/50 space-y-1">
+        <div className="p-3 pb-6 border-t border-border/50 space-y-1" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
           <div className={`flex items-center gap-3 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
             <motion.div
               whileHover={{ scale: 1.1 }}
