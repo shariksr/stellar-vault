@@ -104,17 +104,17 @@ const Index = () => {
       </motion.nav>
 
       {/* Hero with background video */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-[700px] z-0 overflow-hidden">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover opacity-30 dark:opacity-20"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-contain opacity-30 dark:opacity-20"
         >
           <source src={heroBgVideo} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
       </div>
       <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-32 text-center">
         <motion.div
