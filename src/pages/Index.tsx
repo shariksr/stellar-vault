@@ -130,11 +130,11 @@ const Index = () => {
             <span className="text-foreground font-medium">Built for developers. Ready for production.</span>
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
               <Link
                 to="/signup"
-                className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors glow-primary flex items-center gap-2"
+                className="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl bg-primary text-primary-foreground text-sm sm:text-base font-semibold hover:bg-primary/90 transition-colors glow-primary flex items-center gap-2"
               >
                 Start Building <ArrowRight className="h-4 w-4" />
               </Link>
@@ -142,7 +142,7 @@ const Index = () => {
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
               <Link
                 to="/login"
-                className="px-8 py-3.5 rounded-xl bg-card border border-border text-foreground font-semibold hover:bg-accent transition-colors soft-shadow"
+                className="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl bg-card border border-border text-sm sm:text-base text-foreground font-semibold hover:bg-accent transition-colors soft-shadow"
               >
                 Sign In
               </Link>
