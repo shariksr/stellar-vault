@@ -16,7 +16,8 @@ import {
   Terminal,
   Zap,
 } from 'lucide-react';
-import EliteCloudNetwork from '@/components/EliteCloudNetwork';
+import ThemeToggle from '@/components/ThemeToggle';
+import StarryBackground from '@/components/StarryBackground';
 import bgSound from '@/assets/interstellar-sound.mp3';
 import { Volume2, VolumeX } from 'lucide-react';
 
@@ -80,8 +81,10 @@ const Index = () => {
   };
 
   return (
-    <EliteCloudNetwork>
-    <div className="min-h-screen relative text-white">
+    <div className="min-h-screen relative overflow-hidden text-white">
+      <StarryBackground />
+
+      {/* Navbar */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -273,7 +276,6 @@ const Index = () => {
         </p>
       </footer>
     </div>
-    </EliteCloudNetwork>
   );
 };
 
