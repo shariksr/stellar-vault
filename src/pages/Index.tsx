@@ -16,7 +16,7 @@ import {
   Zap,
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
-import heroBgVideo from '@/assets/hero-bg-video.mp4';
+
 
 const features = [
   { icon: Lock, title: 'Encrypted Storage', description: 'End-to-end secure file handling with controlled disk access and access validation.', color: 'bg-google-blue/10 text-google-blue' },
@@ -103,19 +103,7 @@ const Index = () => {
         </div>
       </motion.nav>
 
-      {/* Hero with background video */}
-      <div className="absolute top-0 left-0 w-full h-[700px] z-0 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-contain opacity-30 dark:opacity-20"
-        >
-          <source src={heroBgVideo} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-      </div>
+      {/* Hero */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-32 text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
