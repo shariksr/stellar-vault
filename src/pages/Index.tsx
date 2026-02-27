@@ -16,6 +16,7 @@ import {
   Zap,
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
+import StarryBackground from '@/components/StarryBackground';
 
 
 const features = [
@@ -54,18 +55,8 @@ const gravityDrop = {
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Soft ambient blobs */}
-      <motion.div
-        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-        className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]"
-      />
-      <motion.div
-        animate={{ x: [0, -30, 20, 0], y: [0, 20, -15, 0] }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-        className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-google-green/5 rounded-full blur-[120px]"
-      />
+    <div className="min-h-screen relative overflow-hidden text-white">
+      <StarryBackground />
 
       {/* Navbar */}
       <motion.nav
@@ -79,8 +70,8 @@ const Index = () => {
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
           className="flex items-center gap-2"
         >
-          <Shield className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold font-display gradient-text">FTP-Server</span>
+          <Shield className="h-7 w-7 text-blue-400" />
+          <span className="text-xl font-bold font-display text-blue-300">FTP-Server</span>
         </motion.div>
       <div className="flex items-center gap-2 sm:gap-3">
           <div className="w-8 sm:w-10">
@@ -88,7 +79,7 @@ const Index = () => {
           </div>
           <Link
             to="/login"
-            className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-blue-200/60 hover:text-white transition-colors"
           >
             Sign In
           </Link>
@@ -114,21 +105,21 @@ const Index = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 mb-8 text-sm text-muted-foreground"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/20 mb-8 text-sm text-blue-200/60"
           >
             🔒 Developer-first secure file infrastructure
           </motion.div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-mono text-foreground leading-tight mb-4 sm:mb-6 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-mono text-white leading-tight mb-4 sm:mb-6 tracking-tight" style={{ textShadow: '0 0 40px rgba(150,200,255,0.3)' }}>
             Secure file{' '}
-            <span className="gradient-text">infrastructure</span>
+            <span className="text-blue-400">infrastructure</span>
             <br />
             for modern apps
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-blue-200/50 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
             Upload, manage, and distribute files with expiring signed URLs, API key auth, QR-based sharing, and enterprise-grade security.{' '}
-            <span className="text-foreground font-medium">Built for developers. Ready for production.</span>
+            <span className="text-white font-medium">Built for developers. Ready for production.</span>
           </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
@@ -143,7 +134,7 @@ const Index = () => {
             <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
               <Link
                 to="/login"
-                className="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl bg-card border border-border text-sm sm:text-base text-foreground font-semibold hover:bg-accent transition-colors soft-shadow"
+                className="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl bg-white/10 border border-white/20 text-sm sm:text-base text-white font-semibold hover:bg-white/15 transition-colors backdrop-blur-sm"
               >
                 Sign In
               </Link>
@@ -160,8 +151,8 @@ const Index = () => {
           transition={{ delay: 0.3 }}
           className="text-center mb-12"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-foreground mb-3">Infrastructure-Grade Capabilities</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">Everything you need to build secure file workflows — from upload tokens to expiring signed URLs.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-white mb-3">Infrastructure-Grade Capabilities</h2>
+          <p className="text-blue-200/50 max-w-xl mx-auto">Everything you need to build secure file workflows — from upload tokens to expiring signed URLs.</p>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {features.map((feature, i) => (
@@ -177,7 +168,7 @@ const Index = () => {
                 transition: { type: 'spring', stiffness: 400, damping: 15 },
               }}
               whileTap={{ scale: 0.97 }}
-              className="glass-card p-6 group cursor-default"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 group cursor-default"
             >
               <motion.div
                 whileHover={{ rotate: -10, scale: 1.2 }}
@@ -186,8 +177,8 @@ const Index = () => {
               >
                 <feature.icon className="h-6 w-6" />
               </motion.div>
-              <h3 className="text-base font-semibold font-display text-foreground mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.description}</p>
+              <h3 className="text-base font-semibold font-display text-white mb-2">{feature.title}</h3>
+              <p className="text-sm text-blue-200/50">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -202,8 +193,8 @@ const Index = () => {
           transition={{ type: 'spring', stiffness: 100, damping: 15 }}
           className="text-center mb-10"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-foreground mb-3">Built For</h2>
-          <p className="text-muted-foreground">Teams and products that demand secure, scalable file infrastructure.</p>
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-white mb-3">Built For</h2>
+          <p className="text-blue-200/50">Teams and products that demand secure, scalable file infrastructure.</p>
         </motion.div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {builtFor.map((item, i) => (
@@ -221,7 +212,7 @@ const Index = () => {
               }}
               whileHover={{ y: -6, scale: 1.06, rotate: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="glass-card p-4 flex flex-col items-center gap-2 text-center cursor-default"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 flex flex-col items-center gap-2 text-center cursor-default"
             >
               <motion.div
                 initial={{ rotate: -20 }}
@@ -229,26 +220,26 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ type: 'spring', stiffness: 200, damping: 10, delay: 0.3 + i * 0.1 }}
               >
-                <item.icon className="h-5 w-5 text-primary" />
+                <item.icon className="h-5 w-5 text-blue-400" />
               </motion.div>
-              <span className="text-xs font-medium text-foreground">{item.label}</span>
+              <span className="text-xs font-medium text-white">{item.label}</span>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border/50 py-8 text-center space-y-2">
-        <p className="text-sm text-muted-foreground">
+      <footer className="relative z-10 border-t border-white/10 py-8 text-center space-y-2">
+        <p className="text-sm text-blue-200/40">
           © 2026 FTP-Server. All rights reserved.
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-blue-200/40">
           Developed by{' '}
           <a
             href="https://www.linkedin.com/in/muzamil-bashir-gashroo-8268b4228/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:text-primary/80 font-medium transition-colors"
+            className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
           >
             Muzamil Gashroo
           </a>
