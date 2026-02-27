@@ -118,15 +118,15 @@ const Index = () => {
             🔒 Developer-first secure file infrastructure
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold font-display text-foreground leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-mono text-foreground leading-tight mb-4 sm:mb-6 tracking-tight">
             Secure file{' '}
             <span className="gradient-text">infrastructure</span>
             <br />
-            for modern applications
+            for modern apps
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Upload, manage, and distribute files with expiring signed URLs, API key authentication, QR-based sharing, and enterprise-grade security.{' '}
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            Upload, manage, and distribute files with expiring signed URLs, API key auth, QR-based sharing, and enterprise-grade security.{' '}
             <span className="text-foreground font-medium">Built for developers. Ready for production.</span>
           </p>
 
