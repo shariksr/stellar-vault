@@ -81,20 +81,20 @@ const Index = () => {
           <Shield className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold font-display gradient-text">FTP-Server</span>
         </motion.div>
-        <div className="flex items-center gap-3">
-          <div className="w-10">
+      <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 sm:w-10">
             <ThemeToggle collapsed />
           </div>
           <Link
             to="/login"
-            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="hidden sm:inline-block px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Sign In
           </Link>
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
             <Link
               to="/signup"
-              className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors glow-primary"
+              className="px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:bg-primary/90 transition-colors glow-primary whitespace-nowrap"
             >
               Get Started
             </Link>
